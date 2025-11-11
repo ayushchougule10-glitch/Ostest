@@ -1,0 +1,37 @@
+op=0  
+while [ "$op" -ne 5 ]  
+do 
+echo "Choose operation:"  
+echo "1. Addition (+)"  
+echo "2. Subtraction (-)"  
+echo "3. Multiplication (*)"  
+echo "4. Division (/)"  
+echo "5. Exit"  
+read op  
+if [ "$op" -eq 5 ]; then  
+echo "Exiting..."  
+break  
+f
+ i 
+echo "Enter first number:"  
+read a  
+echo "Enter second number:"  
+read b  
+if [ "$op" -eq 1 ]; then  
+echo "Result: $((a + b))"  
+elif [ "$op" -eq 2 ]; then  
+echo "Result: $((a - b))"  
+elif [ "$op" -eq 3 ]; then  
+echo "Result: $((a * b))"  
+elif [ "$op" -eq 4 ]; then  
+if [ "$b" -ne 0 ]; then  
+echo "Result: $((a / b))"  
+else  
+echo "Error: Division by zero"  
+f
+ i 
+else  
+echo "Invalid option."  
+f
+ i 
+done

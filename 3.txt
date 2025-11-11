@@ -1,0 +1,61 @@
+#include <iostream>  
+#include <vector>  
+#include <iomanip>  
+#include <numeric>  
+#include <algorithm>  
+#include <string>  
+  
+using namespace std;  
+  
+struct Process {  
+    int id, at, bt, ct, tat, wt;  
+};  
+  
+bool compareProcesses(const Process& a, const Process& b) {  
+    return a.at < b.at;  
+}  
+  
+int main() {  
+    int n;  
+    cout << "Enter number of processes: ";  
+    cin >> n;  
+    vector<Process> p(n);  
+    for (int i = 0; i < n; i++) {  
+        p[i].id = i + 1;  
+        cout << "Enter arrival time and burst time for process " << p[i].id << ": ";  
+        cin >> p[i].at >> p[i].bt;  
+    }  
+    sort(p.begin(), p.end(), compareProcesses);  
+     
+    int time = 0;  
+    for (int i = 0; i < n; i++) {  
+        if (time < p[i].at) {  
+            time = p[i].at;  
+        }  
+        p[i].ct = time + p[i].bt;  
+        p[i].tat = p[i].ct - p[i].at;  
+        p[i].wt = p[i].tat - p[i].bt;  
+        time = p[i].ct;  
+    }  
+     
+    cout << "\nID\tAT\tBT\tCT\tTAT\tWT\n";  
+    for (int i = 0; i < n; i++) {  
+        cout << p[i].id << "\t" << p[i].at << "\t" << p[i].bt << "\t"  
+             << p[i].ct << "\t" << p[i].tat << "\t" << p[i].wt << "\n";  
+    }  
+     
+    cout << "\nGantt Chart:\n";  
+    cout << "|";  
+    for (int i = 0; i < n; i++) {  
+        cout << string(p[i].bt * 2, ' ') << "P" << p[i].id << string(p[i].bt * 2, ' ') << "|";  
+    }  
+    cout << "\n";  
+     
+    cout << "0";  
+    for (int i = 0; i < n; i++) {  
+        cout << setw(p[i].bt * 4 + to_string(p[i].id).length() + 2) << right << p[i].ct;  
+    }  
+    cout << "\n";  
+     
+    return 0;  
+} 

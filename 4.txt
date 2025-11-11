@@ -1,0 +1,90 @@
+#include <stdio.h> 
+ 
+struct Process { 
+    int id, at, bt, rt, ct, tat, wt; 
+}; 
+ 
+int main() { 
+    int n; 
+    printf("Enter number of processes: "); 
+    scanf("%d", &n); 
+ 
+    struct Process p[n]; 
+ 
+    for (int i = 0; i < n; i++) { 
+        p[i].id = i + 1; 
+        printf("Enter arrival time and burst time for process %d: ", p[i].id); 
+        scanf("%d %d", &p[i].at, &p[i].bt); 
+        p[i].rt = p[i].bt; 
+    } 
+ 
+    int complete = 0, time = 0, min_rt, shortest; 
+    int found; 
+    float totalWT = 0, totalTAT = 0; 
+ 
+    // for Gantt chart 
+    int ganttOrder[1000], ganttTime[1000], gcIndex = 0; 
+    int prev = -1; 
+ 
+    while (complete < n) { 
+        found = 0; 
+        min_rt = 1000000000; 
+        shortest = -1; 
+ 
+        for (int i = 0; i < n; i++) { 
+            if (p[i].at <= time && p[i].rt > 0 && p[i].rt < min_rt) { 
+                min_rt = p[i].rt; 
+                shortest = i; 
+                found = 1; 
+            } 
+        } 
+ 
+        if (!found) { 
+            time++; 
+            continue; 
+        } 
+ 
+        // record Gantt chart only when process changes 
+        if (shortest != prev) { 
+            ganttOrder[gcIndex] = p[shortest].id; 
+            ganttTime[gcIndex] = time; 
+            gcIndex++; 
+            prev = shortest; 
+        } 
+ 
+        p[shortest].rt--; 
+        time++; 
+ 
+        if (p[shortest].rt == 0) { 
+            complete++; 
+            p[shortest].ct = time; 
+            p[shortest].tat = p[shortest].ct - p[shortest].at; 
+            p[shortest].wt = p[shortest].tat - p[shortest].bt; 
+ 
+            totalWT += p[shortest].wt; 
+            totalTAT += p[shortest].tat; 
+        } 
+    } 
+ 
+    printf("\nID\tAT\tBT\tCT\tTAT\tWT\n"); 
+    for (int i = 0; i < n; i++) { 
+        printf("%d\t%d\t%d\t%d\t%d\t%d\n", 
+               p[i].id, p[i].at, p[i].bt, 
+               p[i].ct, p[i].tat, p[i].wt); 
+    } 
+ 
+    printf("\nAverage Turnaround Time = %.2f", totalTAT / n); 
+    printf("\nAverage Waiting Time    = %.2f\n", totalWT / n); 
+ 
+    // Gantt chart 
+    printf("\nGantt Chart:\n"); 
+    for (int i = 0; i < gcIndex; i++) { 
+        printf("|  P%d ", ganttOrder[i]); 
+    } 
+printf("|\n0"); 
+for (int i = 0; i < gcIndex; i++) { 
+printf("    %d", ganttTime[i]); 
+} 
+printf("    %d\n", time); 
+return 0; 
+} 
